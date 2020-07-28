@@ -58,7 +58,7 @@ const Navigation = () => {
           </li>
         ) : (
           <li>
-            <LoginDialogTrigger />
+            <LoginDialogTrigger user={user} setUser={setUSer} />
           </li>
         )}
       </ul>
@@ -66,7 +66,7 @@ const Navigation = () => {
   );
 };
 
-const LoginDialogTrigger = () => {
+const LoginDialogTrigger = ({ user, setUser }) => {
   // Some stuff to show a button and handle showing
   // the dialog on click
 
@@ -149,30 +149,36 @@ Update the following components to use context
 ---
 
 ```jsx
+const UserContext = React.createContext(null);
 const App = () => {
   const [user, setUser] = React.useState({ username: "Alfalfa" });
 
-  return <Home user={user} setUser={setUser} />;
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      <Home />;
+    </UserContext.Provider>
+  );
 };
 
-const Home = ({ user, setUser }) => {
+const Home = () => {
   return (
     <>
-      <Header user={user} setUser={setUser} />
+      <Header />
       <MainContent />
     </>
   );
 };
 
-const Header = ({ user, setUser }) => {
+const Header = () => {
   return (
     <header>
-      <Navigation user={user} setUser={setUser} />
+      <Navigation />
     </header>
   );
 };
 
-const Navigation = ({ user, setUser }) => {
+const Navigation = () => {
+  const { User, setUser } = React.useContext(UserContext);
   return (
     <nav>
       <ul>
@@ -196,18 +202,21 @@ const Navigation = ({ user, setUser }) => {
 ---
 
 ```jsx
+const DialogContext= React.createContext(null)
 const App = () => {
   const [dialog, setDialog] = React.useState(null);
 
   return (
-    <>
-      <MainContent dialog={dialog} setDialog={setDialog} />
-      <Dialog currentDialog={dialog} />
+    <UserContext.provider value={{dialog,setDialog}}>
+      <MainContent  />
+      <Dialog />
+      <UserContext.provider value={{dialog,setDialog}}>
     </>
   );
 };
 
 const MainContent = ({ dialog, setDialog }) => {
+  const{setDialog}= React.useContext(dialogContext)
   return (
     <>
       <Sidebar>
@@ -220,7 +229,7 @@ const MainContent = ({ dialog, setDialog }) => {
   );
 };
 
-const Dialog = ({ currentDialog }) => {
+const Dialog = ({ }) => {
   if (!currentDialog) {
     return null;
   }
@@ -232,6 +241,7 @@ const Dialog = ({ currentDialog }) => {
 ---
 
 ```js live=true
+const Appcontext = React.createContext(null);
 const App = () => {
   const [count, setCount] = React.useState(0);
   const [name, setName] = React.useState("");
@@ -240,24 +250,20 @@ const App = () => {
   const decrement = () => setCount(count - 1);
 
   return (
-    <>
+    <AppContext.Provider value={(count, name, increment, decrement)}>
       Playing as: {name}
-      <CountDisplay count={count} />
-      <Actions
-        increment={increment}
-        decrement={decrement}
-        name={name}
-        setName={setName}
-      />
+      <CountDisplay />
+      <Actions />
     </>
   );
 };
 
-const CountDisplay = ({ count }) => {
+const CountDisplay = ({}) => {
   return <h1>{count} clicks!</h1>;
 };
 
-const Actions = ({ increment, decrement, name, setName }) => {
+const Actions = () => {
+  const {} = React.useContext(dialogContext);
   return (
     <div>
       <TextInput label="Name" value={name} setValue={setName} />

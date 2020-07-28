@@ -90,7 +90,7 @@ The following component is blurry in terms of abstraction. Let's address that by
 ---
 
 ```js
-const Banner = ({ type, message, user }) => {
+const Banner = ({ type, children }) => {
   const bg = type === "success" ? "green" : "red";
 
   // Only logged in users are allowed to see the banner
@@ -106,7 +106,16 @@ const Banner = ({ type, message, user }) => {
 };
 ```
 
+const AuthenticatedBanner=({type,message,user})=>{
+if(!user){
+return null;
+}
+}
+
 ---
+
+return( <Bannner type={type}>Notification from HelloPets.com: {message}</Banner>
+)
 
 ## Resources
 
