@@ -1,6 +1,7 @@
 import React from "react";
 import usePersistentState from "../hooks/use-PersistentState.hook";
 import { items } from "../data";
+import useInterval from "../hooks/use-interval.hook";
 export const GameContext = React.createContext(null);
 export const GameProvider = ({ children }) => {
   const [numCookies, setNumCookies] = usePersistentState(1000, "num-cookies");
@@ -12,6 +13,7 @@ export const GameProvider = ({ children }) => {
     },
     "purchased-cookies"
   );
+
   const calculateCookiesPerSecond = (purchasedItems) => {
     return Object.keys(purchasedItems).reduce((acc, itemId) => {
       const numOwned = purchasedItems[itemId];
@@ -21,6 +23,11 @@ export const GameProvider = ({ children }) => {
       return acc + value * numOwned;
     }, 0);
   };
+
+  useInterval(() => {
+    const numOfGeneratedCookies = calculateCookiesPerSecond(purchasedItems);
+    setNumCookies(numCookies + numOfGeneratedCookies);
+  }, 1000);
 
   return (
     <GameContext.Provider
